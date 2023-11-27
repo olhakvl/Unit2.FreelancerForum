@@ -8,7 +8,7 @@ const initialFreelancersTable = [
     { name: "Prof. Possibility", price: 43, occupation: "teacher" },
   ];
 
-  const randomData = [
+  const randomFreelancerData = [
     { name: "Prof. Prism", price: 81, occupation: "teacher" },
     { name: "Dr. Impulse", price: 43, occupation: "teacher" },
     { name: "Prof. Spark", price: 76, occupation: "programmer" },
@@ -17,6 +17,28 @@ const initialFreelancersTable = [
     { name: "Amy", price: 55, occupation: "baker" },
     { name: "Anna", price: 62, occupation: "accountant" }
   ]
+
+  // const randomNames = [
+  //   "Amy",
+  //   "Anna",
+  //   "John",
+  //   "Viki",
+  //   "Diana",
+  //   "Alex",
+  //   "Leo"
+  // ];
+
+  // const randomOccupations = [
+  //   "driver",
+  //   "baker",
+  //   "accountant",
+  //   "product owner",
+  //   "writer",
+  //   "actor",
+  //   "singer"
+  // ];
+
+  // const randomPrice = [44, 79, 100, 30, 55, 62, 29];
 
   // function to render the initial freelancers table
   function renderTable(initialTable) {
@@ -53,13 +75,17 @@ let htmlPriceAverage = document.querySelector("#averagePrice");
 let initialAveragePrice = averagePrice(initialFreelancersTable);
 htmlPriceAverage.append(initialAveragePrice);
 
-// function to generate a new random freelancer
-function randomFreelancerData(){
+// Add new freelancers to list and update average
+function addFreelancer() {
+  const randomFreelancerNumber = Math.floor(Math.random() * randomFreelancerData.length);
 
+  let freelancers = [];
+  freelancers.push(randomFreelancerData[randomFreelancerNumber].name, randomFreelancerData[randomFreelancerNumber].occupation, randomFreelancerData[randomFreelancerNumber].price);
+
+  console.log(freelancers);
+  return freelancers;
 }
 
-      // create a new row
-    // let newRow = document.createElement("tr");
-    // // name cell
-    // let nameCell = document.createElement("td"); // create name cell
-    // nameCell.innerHTML = initialTable[i].name;
+const addFreelancervalId = setInterval(addFreelancer, 3000);
+
+renderTable(addFreelancer());
