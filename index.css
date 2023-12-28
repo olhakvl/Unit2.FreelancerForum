@@ -1,0 +1,10 @@
+body {
+    text-align: center;
+    background-color: rgb(193, 214, 209);
+    color: #000000;
+  }
+
+  table {
+    width: 60%;
+    margin-left: 20%;
+  }

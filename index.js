@@ -2,65 +2,34 @@
 // Here, we define variables for the data that our program needs to remember.
 // We call this data "state" because it represents the state of our program.
 // freelancers array
-const initialFreelancersTable = [
-    { name: "Dr. Slice", price: 25, occupation: "gardener" },
+const freelancersTable = [
+    { name: "Dr. Slice", price: 28, occupation: "gardener" },
     { name: "Dr. Pressure", price: 51, occupation: "programmer" },
     { name: "Prof. Possibility", price: 43, occupation: "teacher" },
   ];
 
-  const randomFreelancerData = [
-    { name: "Prof. Prism", price: 81, occupation: "teacher" },
-    { name: "Dr. Impulse", price: 43, occupation: "teacher" },
-    { name: "Prof. Spark", price: 76, occupation: "programmer" },
-    { name: "Dr. Wire", price: 47, occupation: "teacher" },
-    { name: "Prof. Goose", price: 72, occupation: "driver" },
-    { name: "Amy", price: 55, occupation: "baker" },
-    { name: "Anna", price: 62, occupation: "accountant" }
-  ]
+  const randomNames = [
+    "Amy",
+    "Anna",
+    "John",
+    "Viki",
+    "Diana",
+    "Alex",
+    "Leo"
+  ];
 
-  // const randomNames = [
-  //   "Amy",
-  //   "Anna",
-  //   "John",
-  //   "Viki",
-  //   "Diana",
-  //   "Alex",
-  //   "Leo"
-  // ];
-
-  // const randomOccupations = [
-  //   "driver",
-  //   "baker",
-  //   "accountant",
-  //   "product owner",
-  //   "writer",
-  //   "actor",
-  //   "singer"
-  // ];
-
-  // const randomPrice = [44, 79, 100, 30, 55, 62, 29];
-
-  // function to render the initial freelancers table
-  function renderTable(initialTable) {
-    // save html table element to a variable
-    let htmlTable = document.querySelector("#freelancerTable");
-
-    // loop throgh the initialFreelancersTable, create a new row and add corresponding data from the initialFreelancersTable into the cells
-    initialTable.forEach(currentValue => {
-      let newRow = htmlTable.insertRow();
-      let nameCell = newRow.insertCell(0);
-      let occupationCell = newRow.insertCell(1);
-      let priceCell = newRow.insertCell(2);
-      nameCell.textContent = currentValue.name;
-      occupationCell.textContent = currentValue.occupation;
-      priceCell.textContent = `$${currentValue.price}`;
-    });
-  }
-
-  renderTable(initialFreelancersTable);
+  const randomOccupations = [
+    "driver",
+    "baker",
+    "accountant",
+    "product owner",
+    "writer",
+    "actor",
+    "singer"
+  ];
 
 // function to calculate average price
-function averagePrice(tableData){
+function calculateAveragePrice(tableData){
   // get sum of all prices
   let totalPrice = tableData.reduce((total, currentRow) => total += currentRow.price, 0
   );
@@ -70,22 +39,77 @@ function averagePrice(tableData){
   return Math.floor(averagePrice);
 }
 
-// set the average price in the html
-let htmlPriceAverage = document.querySelector("#averagePrice");
-let initialAveragePrice = averagePrice(initialFreelancersTable);
-htmlPriceAverage.append(initialAveragePrice);
+//select the section with the id of "averagePriceText"
+const averagePriceElement = document.querySelector("#averagePriceText");
 
-// Add new freelancers to list and update average
-function addFreelancer() {
-  const randomFreelancerNumber = Math.floor(Math.random() * randomFreelancerData.length);
+// create div with id to be able to select this area to re-render the average price
+const priceDiv = document.createElement("div");
+priceDiv.setAttribute("id", "averagePrice");
+averagePriceElement.appendChild(priceDiv);
 
-  let freelancers = [];
-  freelancers.push(randomFreelancerData[randomFreelancerNumber].name, randomFreelancerData[randomFreelancerNumber].occupation, randomFreelancerData[randomFreelancerNumber].price);
+// render average price
+const renderAveragePrice = () => {
+  //get container holding average price
+  const htmlPriceAverage = document.querySelector("#averagePrice");
+  //get average price
+  const averagePrice = calculateAveragePrice(freelancersTable);
+  //create container for average price
+  const p = document.createElement("p");
+  p.innerHTML = `The average starting price is: $${averagePrice}`;
 
-  console.log(freelancers);
-  return freelancers;
-}
+  htmlPriceAverage.replaceChildren(p);
+};
 
-const addFreelancervalId = setInterval(addFreelancer, 3000);
+// render the initial average price
+renderAveragePrice();
 
-renderTable(addFreelancer());
+function renderFreelancers() {
+  //select the table body
+  const freelancerTable = document.querySelector("tbody");
+
+  const freelancerElements = freelancersTable.map((person) => {
+    const row = document.createElement("tr");
+
+    const personName = document.createElement("td");
+    personName.innerHTML = person.name;
+    const personOccupation = document.createElement("td");
+    personOccupation.innerHTML = person.occupation;
+    const personPrice = document.createElement("td");
+    personPrice.innerHTML = `$${person.price}`;
+
+    row.appendChild(personName);
+    row.appendChild(personOccupation);
+    row.appendChild(personPrice);
+
+    return row;
+  });
+    //replace the table body with the new children elements
+    freelancerTable.replaceChildren(...freelancerElements);
+  }
+
+  // render the initial freelancer table
+  renderFreelancers();
+
+  const addFreelancer = () => {
+    //get random name for new freelancer
+    const name = randomNames[Math.floor(Math.random() * randomNames.length)];
+    //get random occupation for new freelancer
+    const occupation = randomOccupations[Math.floor(Math.random() * randomOccupations.length)];
+    //get random price for new freelancer
+    const price = Math.round(Math.random() * 100);
+  
+    freelancersTable.push({ name, price, occupation });
+  
+    //re-render the average price
+    renderAveragePrice();
+    //re-render the freelancer table body
+    renderFreelancers();
+  
+    //stop adding freelancers once we have 15 freelancers
+    if (freelancersTable.length > 15) {
+      clearInterval(addFreelancerInterval);
+    }
+  };
+  
+  // `setInterval` will call `addFreelancer` every 2000 milliseconds (2 second)
+  const addFreelancerInterval = setInterval(addFreelancer, 2000);
